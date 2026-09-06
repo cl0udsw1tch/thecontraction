@@ -32,10 +32,6 @@ services:
   #     - '3001:3001'
   #   environment:
   #     DATABASE_URL: postgresql://tc:tc@postgres:5432/tc_dev
-  #     JWT_SECRET: <local secret>
-  #     AWS_REGION: us-east-1
-  #     RENDER_LAMBDA_NAME: tc-render
-  #     NODE_ENV: development
   #     DEV_RENDER_URL: http://dev-render:4000/render
   #   volumes:
   #     - ./tc-api:/app
