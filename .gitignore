@@ -1,0 +1,5 @@
+tc-web/
+tc-api/
+tc-render/
+local-output/
+*.pem
