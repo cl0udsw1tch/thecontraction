@@ -3,3 +3,9 @@ tc-api/
 tc-render/
 local-output/
 *.pem
+.env
+.env.dev
+.env.prod
+prod/
+docker-compose.prod.yml
+docs/group_instance_ip.txt

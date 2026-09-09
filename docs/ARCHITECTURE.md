@@ -18,14 +18,6 @@ No monorepo — each is independently deployable. Justified here because the
 render step is genuinely decoupled (fire-and-forget invoke), so there's little
 cross-repo coupling to manage.
 
-## Why self-hosted, not managed
-
-Originally scoped around Supabase (managed Postgres + Auth + RLS) for a
-zero-maintenance backend. Deliberately moved off it to **practice writing
-auth and DB access by hand** — this is a learning project, not a
-time-to-market one. That decision is why `tc-api` owns password hashing, JWTs,
-and raw Prisma/SQL queries instead of delegating to a BaaS.
-
 ## Infrastructure
 
 - **Compute**: one AWS EC2 `t3.micro` running Postgres and `tc-api` as
@@ -73,22 +65,6 @@ step be decoupled/async (re-read by ID rather than passed inline), and it's
 the single source of truth for status/metadata that both `tc-api` and any
 future reader need to query.
 
-## Why Lambda instead of a queue (BullMQ/Redis)
-
-Originally planned around BullMQ + Redis + a worker process. Dropped once
-Lambda was in the picture, because:
-
-- The API is already running on an always-on VM — Lambda's "don't pay for
-  idle compute" pitch doesn't help when idle compute is already a sunk cost,
-  but its **CPU isolation** still matters: a heavy TeX compile can't
-  contend with `tc-api`'s request handling on a 1-vCPU box if it's not
-  running with it.
-- No process to babysit — a BullMQ worker needs its own uptime management;
-  Lambda has none of its own.
-- Trade-off accepted: no job dashboard, no built-in rate limiting/priority.
-  Not needed at "one render job per article write" scale. If that ever
-  changes (e.g. bulk-importing hundreds of articles), pairing Lambda with
-  SQS is the documented upgrade path, not something built now.
 
 ## Modules inside `tc-api`
 

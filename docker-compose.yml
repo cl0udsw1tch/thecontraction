@@ -1,44 +1,49 @@
 services:
+
   postgres:
     image: postgres:16
     restart: unless-stopped
     environment:
-      POSTGRES_USER: tc
-      POSTGRES_PASSWORD: tc
-      POSTGRES_DB: tc_dev
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - '5432:5432'
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  dev-render:
+  tc-web:
     build:
-      context: ./tc-render
-      dockerfile: Dockerfile.dev
+      context: ./tc-web
+      dockerfile: Dockerfile
+      target: dev
     ports:
-      - '4000:4000'
+      - ${TC_WEB_PORT}:${TC_WEB_PORT}
     environment:
-      DEV_DATABASE_URL: postgresql://tc:tc@postgres:5432/tc_dev
+      API_URL: ${TC_API_URL}
     volumes:
-      - ./tc-render:/app
+      - ./tc-web:/app
+    depends_on:
+      - tc-api
+
+  tc-api:
+    build:
+      context: ./tc-api
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - '${TC_API_PORT}:${TC_API_PORT}'
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}      
+      NODE_ENV: ${NODE_ENV}
+      AWS_REGION: ${AWS_REGION}
+      JWT_SECRET: ${JWT_SECRET}
+      RENDER_LAMBDA_NAME: ${LAMBDA_RENDER_NAME} 
+    volumes:
+      - ./tc-api:/app
     depends_on:
       - postgres
-
-  # tc-api:
-  #   build:
-  #     context: ./tc-api
-  #     dockerfile: Dockerfile.dev
-  #   ports:
-  #     - '3001:3001'
-  #   environment:
-  #     DATABASE_URL: postgresql://tc:tc@postgres:5432/tc_dev
-  #     DEV_RENDER_URL: http://dev-render:4000/render
-  #   volumes:
-  #     - ./tc-api:/app
-  #     - /app/node_modules
-  #   depends_on:
-  #     - postgres
-  #     - dev-render
+      - tc-render
 
 volumes:
   pgdata:
