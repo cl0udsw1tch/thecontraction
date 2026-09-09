@@ -20,7 +20,7 @@ services:
     ports:
       - ${TC_WEB_PORT}:${TC_WEB_PORT}
     environment:
-      API_URL: ${TC_API_URL}
+      API_URL: http://tc-api:${TC_API_PORT}
     volumes:
       - ./tc-web:/app
     depends_on:
@@ -43,7 +43,6 @@ services:
       - ./tc-api:/app
     depends_on:
       - postgres
-      - tc-render
-
+ 
 volumes:
   pgdata:
