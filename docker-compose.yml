@@ -38,7 +38,7 @@ services:
       NODE_ENV: ${NODE_ENV}
       AWS_REGION: ${AWS_REGION}
       JWT_SECRET: ${JWT_SECRET}
-      RENDER_LAMBDA_NAME: ${LAMBDA_RENDER_NAME} 
+      LAMBDA_RENDER_NAME: ${LAMBDA_RENDER_NAME} 
     volumes:
       - ./tc-api:/app
     depends_on:
