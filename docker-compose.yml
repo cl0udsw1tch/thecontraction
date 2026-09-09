@@ -21,6 +21,8 @@ services:
       - ${TC_WEB_PORT}:${TC_WEB_PORT}
     environment:
       API_URL: http://tc-api:${TC_API_PORT}
+      HOSTNAME: 0.0.0.0
+      PORT: ${TC_WEB_PORT}
     volumes:
       - ./tc-web:/app
     depends_on:

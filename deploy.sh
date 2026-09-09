@@ -2,4 +2,4 @@
 set -e
 docker compose up -d;
 sleep 1;
-docker compose exec tc-api npm run migrate;
+docker compose exec -d tc-api npm run migrate;
