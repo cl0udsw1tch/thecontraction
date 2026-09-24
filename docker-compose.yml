@@ -1,5 +1,4 @@
 services:
-
   postgres:
     image: postgres:16
     restart: unless-stopped
@@ -8,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -22,7 +21,8 @@ services:
     environment:
       API_URL: http://tc-api:${TC_API_PORT}
       HOSTNAME: 0.0.0.0
-      PORT: ${TC_WEB_PORT}
+      TC_WEB_PORT: ${TC_WEB_PORT}
+      TC_API_PORT: ${TC_API_PORT}
     volumes:
       - ./tc-web:/app
     depends_on:
@@ -34,23 +34,27 @@ services:
       dockerfile: Dockerfile
       target: dev
     ports:
-      - '${TC_API_PORT}:${TC_API_PORT}'
+      - "${TC_API_PORT}:${TC_API_PORT}"
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}      
-      NODE_ENV: ${NODE_ENV}
       AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
+      NODE_ENV: ${NODE_ENV}
       JWT_SECRET: ${JWT_SECRET}
-      LAMBDA_RENDER_NAME: ${LAMBDA_RENDER_NAME} 
+      LAMBDA_RENDER_NAME: ${LAMBDA_RENDER_NAME}
       TC_API_PORT: ${TC_API_PORT}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}
 
     volumes:
       - ./tc-api:/app
     depends_on:
       - postgres
- 
+
 volumes:
   pgdata:
